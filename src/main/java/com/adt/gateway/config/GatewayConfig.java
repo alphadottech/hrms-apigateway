@@ -1,6 +1,7 @@
 package com.adt.gateway.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,12 @@ import com.adt.gateway.routers.AuthenticationFilter;
 @Configuration
 public class GatewayConfig {
 	
+	@Value("${employe.service.url}")
+	private String employeeUrl;
+	
+	@Value("${auth.service.url}")
+	private String authUrl;
+	
     @Autowired
     AuthenticationFilter filter;
 
@@ -18,15 +25,15 @@ public class GatewayConfig {
     public RouteLocator routes(RouteLocatorBuilder builder) {
         return builder.routes()	
                 .route("auth-service", r -> r.path("/api/auth/**")
-                        .uri("http://192.168.1.20:9004/")) 
+                        .uri(authUrl)) 
                 
                 .route("auth-service", r -> r.path("/api/user/**")
                         .filters(f -> f.filter(filter))
-                        .uri("http://192.168.1.20:9004/"))
+                        .uri(authUrl))
                 
                 .route("position_Module", r -> r.path("/employee/**")
                         .filters(f -> f.filter(filter))
-                        .uri("http://192.168.1.23:9090/"))
+                        .uri(employeeUrl))
                 .build();
     }
 
