@@ -18,6 +18,9 @@ public class GatewayConfig {
 	@Value("${auth.service.url}")
 	private String authUrl;
 	
+	@Value("${payroll.service.url}")
+	private String payrollUrl;
+	
     @Autowired
     AuthenticationFilter filter;
 
@@ -34,6 +37,10 @@ public class GatewayConfig {
                 .route("position_Module", r -> r.path("/employee/**")
                         .filters(f -> f.filter(filter))
                         .uri(employeeUrl))
+                
+                .route("hrms-payroll", r -> r.path("/timeSheet/**")
+                        .filters(f -> f.filter(filter))
+                        .uri(payrollUrl))
                 .build();
     }
 
