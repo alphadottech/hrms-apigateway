@@ -96,13 +96,10 @@ public class UtilityHandler {
 			LOGGER.info("StatusCode of Third Party Api - " + respons);
 
 			if (respons == 200) {
-				
-				return false;
-				
+				return false;	
 			} else {
 				return true;
 			}
-
 		} catch (Exception e) {
 			LOGGER.error(e);
 			return true;

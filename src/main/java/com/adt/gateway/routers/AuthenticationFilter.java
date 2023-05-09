@@ -38,8 +38,11 @@ public class AuthenticationFilter implements GatewayFilter {
 			final String token = this.getAuthHeader(request);
 			if (utilClass.isInvalid(token))
 				return this.onError(exchange, "Authorization header is invalid", HttpStatus.UNAUTHORIZED);
-			String uri = request.getPath().toString();
+//			String uri = request.getPath().toString();
+			String uri = request.getURI().toString();
+			uri=uri.substring(21);
 			String methodType = request.getMethod().toString();
+			
 			if(utilClass.isApiValid(uri,methodType,token)){
 				return this.onError(exchange, "Authorization header is invalid", HttpStatus.UNAUTHORIZED);
 			}
