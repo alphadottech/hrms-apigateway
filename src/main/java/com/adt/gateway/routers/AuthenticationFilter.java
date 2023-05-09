@@ -1,5 +1,7 @@
 package com.adt.gateway.routers;
 
+import java.net.URI;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,14 @@ public class AuthenticationFilter implements GatewayFilter {
 			final String token = this.getAuthHeader(request);
 			if (utilClass.isInvalid(token))
 				return this.onError(exchange, "Authorization header is invalid", HttpStatus.UNAUTHORIZED);
+//			String uri = request.getPath().toString();
+			String uri = request.getURI().toString();
+			uri=uri.substring(21);
+			String methodType = request.getMethod().toString();
+			
+			if(utilClass.isApiValid(uri,methodType,token)){
+				return this.onError(exchange, "Authorization header is invalid", HttpStatus.UNAUTHORIZED);
+			}
 			this.populateRequestWithHeaders(exchange, token);
 		}
 		return chain.filter(exchange);
