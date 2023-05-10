@@ -1,6 +1,8 @@
 package com.adt.gateway.routers;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,12 +40,9 @@ public class AuthenticationFilter implements GatewayFilter {
 			final String token = this.getAuthHeader(request);
 			if (utilClass.isInvalid(token))
 				return this.onError(exchange, "Authorization header is invalid", HttpStatus.UNAUTHORIZED);
-//			String uri = request.getPath().toString();
-			String uri = request.getURI().toString();
-			uri=uri.substring(21);
+			String uriString = request.getURI().toString();
 			String methodType = request.getMethod().toString();
-			
-			if(utilClass.isApiValid(uri,methodType,token)){
+			if(utilClass.isApiValid(uriString,methodType,token)){
 				return this.onError(exchange, "Authorization header is invalid", HttpStatus.UNAUTHORIZED);
 			}
 			this.populateRequestWithHeaders(exchange, token);
