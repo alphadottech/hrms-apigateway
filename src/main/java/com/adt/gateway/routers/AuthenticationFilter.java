@@ -1,9 +1,5 @@
 package com.adt.gateway.routers;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +23,11 @@ public class AuthenticationFilter implements GatewayFilter {
 
 	@Autowired
 	private UtilityHandler utilClass;
-	
+
 	private static final Logger LOGGER = LogManager.getLogger(AuthenticationFilter.class);
 
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-		LOGGER.info("Enter in filer method");
 		ServerHttpRequest request = exchange.getRequest();
 		if (routerValidator.isSecured.test((ServerHttpRequest) request)) {
 			if (this.isAuthMissing(request))
@@ -40,17 +35,11 @@ public class AuthenticationFilter implements GatewayFilter {
 			final String token = this.getAuthHeader(request);
 			if (utilClass.isInvalid(token))
 				return this.onError(exchange, "Authorization header is invalid", HttpStatus.UNAUTHORIZED);
-			String uriString = request.getURI().toString();
-			String methodType = request.getMethod().toString();
-			if(utilClass.isApiValid(uriString,methodType,token)){
-				return this.onError(exchange, "Authorization header is invalid", HttpStatus.UNAUTHORIZED);
-			}
 			this.populateRequestWithHeaders(exchange, token);
 		}
 		return chain.filter(exchange);
 	}
 
-	/* PRIVATE */
 	private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
 		ServerHttpResponse response = exchange.getResponse();
 		response.setStatusCode(httpStatus);
@@ -66,7 +55,7 @@ public class AuthenticationFilter implements GatewayFilter {
 	}
 
 	private void populateRequestWithHeaders(ServerWebExchange exchange, String token) {
-		LOGGER.info("Token verify successfully");
+		LOGGER.info("Token varified successfully");
 		exchange.getRequest().mutate().build();
 	}
 
