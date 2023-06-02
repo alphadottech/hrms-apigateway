@@ -12,8 +12,8 @@ import com.adt.gateway.routers.AuthenticationFilter;
 @Configuration
 public class GatewayConfig {
 	
-	@Value("${employe.service.url}")
-	private String employeeUrl;
+	@Value("${hrms.service.url}")
+	private String hrmsUrl;
 	
 	@Value("${auth.service.url}")
 	private String authUrl;
@@ -39,7 +39,7 @@ public class GatewayConfig {
                 
                 .route("position_Module", r -> r.path("/hrms/**")
                         .filters(f -> f.filter(filter))
-                        .uri(employeeUrl))
+                        .uri(hrmsUrl))
                 
                 .route("hrms-payroll", r -> r.path("/payroll/**")
                         .filters(f -> f.filter(filter))
