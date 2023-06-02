@@ -45,7 +45,7 @@ public class GatewayConfig {
                         .filters(f -> f.filter(filter))
                         .uri(payrollUrl))
                 
-                .route("expense-service", r -> r.path("/expenseManagement/**")
+                .route("expense-service", r -> r.path("/expensemanagement/**")
                 		.filters(f -> f.filter(filter))
                         .uri(expenseUrl))
                 .build();
