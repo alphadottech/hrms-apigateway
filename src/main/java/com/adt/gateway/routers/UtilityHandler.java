@@ -1,7 +1,7 @@
 package com.adt.gateway.routers;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,10 +14,10 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class UtilityHandler {
 
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
 	@Value("${auth.service.url}")
 	private String authServiveUrl;
-
-	private static final Logger LOGGER = LogManager.getLogger(UtilityHandler.class);
 
 	public boolean isInvalid(String token) {
 		try {
@@ -39,7 +39,7 @@ public class UtilityHandler {
 				return true;
 			}
 		} catch (Exception e) {
-			LOGGER.error(e);
+			LOGGER.error("Exception: {}", e);
 			return true;
 		}
 	}
