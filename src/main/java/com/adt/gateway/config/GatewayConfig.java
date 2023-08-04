@@ -11,44 +11,46 @@ import com.adt.gateway.routers.AuthenticationFilter;
 
 @Configuration
 public class GatewayConfig {
-	
+
 	@Value("${hrms.service.url}")
 	private String hrmsUrl;
-	
+
 	@Value("${auth.service.url}")
 	private String authUrl;
-	
+
 	@Value("${payroll.service.url}")
 	private String payrollUrl;
-	
+
 	@Value("${expense.service.url}")
 	private String expenseUrl;
-	
-    @Autowired
-    AuthenticationFilter filter;
 
-    @Bean
-    public RouteLocator routes(RouteLocatorBuilder builder) {
-        return builder.routes()	
-                .route("auth-service", r -> r.path("/api/auth/**")
-                        .uri(authUrl)) 
-                
-                .route("auth-service", r -> r.path("/api/user/**")
-                        .filters(f -> f.filter(filter))
-                        .uri(authUrl))
-                
-                .route("position_Module", r -> r.path("/hrms/**")
-                        .filters(f -> f.filter(filter))
-                        .uri(hrmsUrl))
-                
-                .route("hrms-payroll", r -> r.path("/payroll/**")
-                        .filters(f -> f.filter(filter))
-                        .uri(payrollUrl))
-                
-                .route("expense-service", r -> r.path("/expensemanagement/**")
-                		.filters(f -> f.filter(filter))
-                        .uri(expenseUrl))
-                .build();
-    }
+	@Value("${server.servlet.context-path}")
+	private String gatewayContext;
+
+	@Autowired
+	AuthenticationFilter filter;
+
+	@Bean
+	public RouteLocator routes(RouteLocatorBuilder builder) {
+		return builder.routes()
+
+				.route("auth",
+						r -> r.path(gatewayContext + "/api/**").filters(f -> f.rewritePath(gatewayContext, ""))
+								.uri(authUrl))
+
+				.route("hrms",
+						r -> r.path(gatewayContext + "/hrms/**").filters(f -> f.rewritePath(gatewayContext, ""))
+								.uri(hrmsUrl))
+
+				.route("payroll",
+						r -> r.path(gatewayContext + "/payroll/**").filters(f -> f.rewritePath(gatewayContext, ""))
+								.uri(payrollUrl))
+
+				.route("expensemanagement",
+						r -> r.path(gatewayContext + "/expensemanagement/**")
+								.filters(f -> f.rewritePath(gatewayContext, "")).uri(expenseUrl))
+
+				.build();
+	}
 
 }
