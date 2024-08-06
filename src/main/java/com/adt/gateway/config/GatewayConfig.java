@@ -1,5 +1,7 @@
 package com.adt.gateway.config;
 
+import java.time.Duration;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -42,9 +44,11 @@ public class GatewayConfig {
 						r -> r.path(gatewayContext + "/hrms/**").filters(f -> f.rewritePath(gatewayContext, ""))
 								.uri(hrmsUrl))
 
-				.route("payroll",
-						r -> r.path(gatewayContext + "/payroll/**").filters(f -> f.rewritePath(gatewayContext, ""))
-								.uri(payrollUrl))
+				.route("payroll", r -> r.path(gatewayContext + "/payroll/**")
+						.filters(f -> f.rewritePath(gatewayContext, "")
+								.retry(config -> config.setRetries(3)
+										.setBackoff(Duration.ofSeconds(10), Duration.ofSeconds(50), 2, false)))
+						.uri(payrollUrl))
 
 				.route("expensemanagement",
 						r -> r.path(gatewayContext + "/expensemanagement/**")
